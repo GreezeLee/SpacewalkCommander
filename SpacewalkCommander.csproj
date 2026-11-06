@@ -9,12 +9,19 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>SpacewalkCommander</RootNamespace>
     <AssemblyName>SpacewalkCommander</AssemblyName>
+    <!-- Icon of the .exe (Explorer, shortcuts); rendered from Assets/AppIcon.xaml by tools/Generate-AppIcon.ps1. -->
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <!-- The test project lives below this folder and must not be compiled into the application. -->
     <DefaultItemExcludes>$(DefaultItemExcludes);SpacewalkCommander.Tests\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="SpacewalkCommander.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Window icon (title bar, taskbar, Alt+Tab), loaded by MainWindow.Icon. -->
+    <Resource Include="Assets\AppIcon.ico" />
   </ItemGroup>
 
 </Project>

@@ -36,9 +36,12 @@ with the `$msCompile` problem matcher) and **start** (`dotnet run`, builds and s
 
 ```
 SpacewalkCommander.csproj       WPF application
-App.xaml(.cs)                   Application entry (StartupUri = MainWindow); merges Themes/Theme.xaml
+App.xaml(.cs)                   Application entry (StartupUri = MainWindow); merges Themes/Theme.xaml and Assets/AppIcon.xaml
 MainWindow.xaml(.cs)            The only window; view concerns only (culture, dark title bar, log scrolling, close confirmation)
 Themes/Theme.xaml               Dark theme: palette, typography, control templates (see 9.1)
+Assets/AppIcon.xaml             Application icon as vector drawings (header logo, source of the .ico; see 9.2)
+Assets/AppIcon.ico              Generated multi-size Windows icon (exe and window icon; see 9.2)
+tools/Generate-AppIcon.ps1      Renders Assets/AppIcon.xaml into Assets/AppIcon.ico
 Bluetooth/                      BLE scanning, FTMS protocol and GATT client
 Workouts/                       Recording, analysis and local archive of workouts
 GoogleHealth/                   OAuth sign-in, Google Health API client, payload mapping, upload service
@@ -317,7 +320,7 @@ saving never rewrites the user's file):
   override the style trigger that turns a disabled action button grey.
 - Icons: font glyphs from *Segoe Fluent Icons* (Windows 11) with *Segoe MDL2 Assets* as fallback; speed and
   incline symbols are drawn as `Path` geometries in `MainWindow.xaml` (no suitable glyph exists in both fonts).
-- Layout (top to bottom): header with the status text (`MainViewModel.StatusText`) and a state badge
+- Layout (top to bottom): header with the application logo (`AppIconImage`, see 9.2), the status text (`MainViewModel.StatusText`) and a state badge
   (Offline / Searching / Connecting / Connected / Running, derived from the view model flags; searching and running
   pulse); treadmill card (device list, Scan, Connect, Disconnect); targets card (speed and incline with −/+,
   slider, range, Start / Pause / STOP); live values (six tiles); Google Health card; log (takes the remaining height).
@@ -326,6 +329,24 @@ saving never rewrites the user's file):
   title bar and content look like one surface. Errors are ignored (older Windows keeps its default title bar).
 - Labels referenced by the README (“Scan”, “Connect”, “Disconnect”, “Start”, “Pause”, “STOP”, “Sign in with
   Google”, “Upload pending”, “Open settings”, “Google Health”, log) must stay as they are or be changed together.
+
+### 9.2 Application icon
+
+- **Motif:** a walker on an inclined treadmill deck with a front upright and handle, plus a sparkle and two star
+  dots, in dark ink (`#06201D`, as `OnAccentBrush`) on a rounded tile with the accent gradient (`#2DD4BF` →
+  `#0EA5E9`, as `AccentGradientBrush`) and a soft white gloss from the top left.
+- **Single source:** `Assets/AppIcon.xaml`, a resource dictionary with two `DrawingImage`s on a 256 × 256 canvas:
+  `AppIconImage` (full detail; tile inset 12 units, radius 54) and `AppIconSmallImage` (for 16–24 px: larger
+  tile, thicker strokes, no stars, no upright). A transparent 256 × 256 frame keeps the drawing bounds fixed. The
+  colours are literals (exception to 9.1) because the generator loads the file without `Themes/Theme.xaml`.
+- **Generated file:** `tools/Generate-AppIcon.ps1` (Windows PowerShell 5.1, WPF, no extra tools) renders the
+  drawings at 16, 20, 24, 32, 40, 48, 64 and 256 px and writes `Assets/AppIcon.ico`: 32-bit BMP frames with AND
+  mask below 256 px, a PNG frame at 256 px. `-PreviewFolder <dir>` also writes one PNG per size. After changing
+  `AppIcon.xaml`, run `powershell -ExecutionPolicy Bypass -File tools/Generate-AppIcon.ps1` and commit both files;
+  the build does not regenerate the icon.
+- **Embedding:** `<ApplicationIcon>` in the project file puts the icon into the exe (Explorer, shortcuts);
+  `Assets/AppIcon.ico` is also a WPF `Resource` and set as `MainWindow.Icon` (title bar, taskbar, Alt+Tab). The
+  header shows `AppIconImage` at 46 px, which makes its tile 42 px.
 
 ## 10. Known limitations
 
@@ -352,3 +373,4 @@ saving never rewrites the user's file):
 | 2026-11-06 | Modern dark UI: `Themes/Theme.xaml`, card layout with state badge, dark title bar (`DarkTitleBar`). |
 | 2026-11-06 | Renamed the app from `UrevoSpacewalkCommander` to `SpacewalkCommander` (project files, assembly, namespaces, tests, AppData folders, window title, sign-in page, README). |
 | 2026-11-06 | Added VS Code tasks `build` and `start` (`.vscode/tasks.json`). |
+| 2026-11-06 | Application icon (walker on an inclined treadmill): `Assets/AppIcon.xaml`, generated `Assets/AppIcon.ico`, `tools/Generate-AppIcon.ps1`; used as exe icon, window icon and header logo. |

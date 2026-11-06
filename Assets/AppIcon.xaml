@@ -1,0 +1,109 @@
+<!--
+  Application icon as vector drawings on a 256 x 256 canvas: a walker on an inclined treadmill deck, with a few
+  stars, on the accent gradient tile. Single source for the header logo and for Assets/AppIcon.ico, which
+  tools/Generate-AppIcon.ps1 renders from this file. The colours are literal on purpose: the script loads this file
+  on its own, without Themes/Theme.xaml (they match AccentColor, AccentDeepColor and OnAccentBrush).
+  AppIconSmallImage is a simplified variant with thicker strokes for 16 to 24 pixels.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <LinearGradientBrush x:Key="AppIconTileBrush" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="#FF2DD4BF" Offset="0" />
+    <GradientStop Color="#FF0EA5E9" Offset="1" />
+  </LinearGradientBrush>
+
+  <!-- Soft light from the top left that gives the tile some depth. -->
+  <RadialGradientBrush x:Key="AppIconGlossBrush" Center="0.2,0.1" GradientOrigin="0.2,0.1" RadiusX="0.9" RadiusY="0.9">
+    <GradientStop Color="#40FFFFFF" Offset="0" />
+    <GradientStop Color="#00FFFFFF" Offset="1" />
+  </RadialGradientBrush>
+
+  <SolidColorBrush x:Key="AppIconInkBrush" Color="#FF06201D" />
+  <SolidColorBrush x:Key="AppIconStarBrush" Color="#F2FFFFFF" />
+
+  <DrawingImage x:Key="AppIconImage">
+    <DrawingImage.Drawing>
+      <DrawingGroup>
+        <!-- Transparent frame: keeps the drawing bounds at the full 256 x 256 canvas. -->
+        <GeometryDrawing Brush="#00000000" Geometry="M0,0 H256 V256 H0 Z" />
+        <GeometryDrawing Brush="{StaticResource AppIconTileBrush}">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="12,12,232,232" RadiusX="54" RadiusY="54" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="{StaticResource AppIconGlossBrush}">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="12,12,232,232" RadiusX="54" RadiusY="54" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+
+        <!-- Stars: a four-pointed sparkle and two dots. -->
+        <GeometryDrawing Brush="{StaticResource AppIconStarBrush}"
+                         Geometry="M64,50 Q67,67 84,70 Q67,73 64,90 Q61,73 44,70 Q61,67 64,50 Z" />
+        <GeometryDrawing Brush="{StaticResource AppIconStarBrush}">
+          <GeometryDrawing.Geometry>
+            <GeometryGroup>
+              <EllipseGeometry Center="104,40" RadiusX="6" RadiusY="6" />
+              <EllipseGeometry Center="46,124" RadiusX="5" RadiusY="5" />
+            </GeometryGroup>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+
+        <!-- Treadmill: inclined deck, front upright and handle. -->
+        <GeometryDrawing Geometry="M48,210 L206,176 M202,172 L190,98 L176,100">
+          <GeometryDrawing.Pen>
+            <Pen Brush="{StaticResource AppIconInkBrush}" Thickness="20" StartLineCap="Round" EndLineCap="Round"
+                 LineJoin="Round" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+
+        <!-- Walker: head, then torso, legs and arms as round strokes. -->
+        <GeometryDrawing Brush="{StaticResource AppIconInkBrush}">
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry Center="128,52" RadiusX="18" RadiusY="18" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Geometry="M121,84 L112,128 M112,128 L98,154 L86,186 M112,128 L134,150 L140,174
+                                   M119,92 L98,110 L90,132 M119,92 L136,112 L150,108">
+          <GeometryDrawing.Pen>
+            <Pen Brush="{StaticResource AppIconInkBrush}" Thickness="17" StartLineCap="Round" EndLineCap="Round"
+                 LineJoin="Round" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingImage.Drawing>
+  </DrawingImage>
+
+  <DrawingImage x:Key="AppIconSmallImage">
+    <DrawingImage.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="#00000000" Geometry="M0,0 H256 V256 H0 Z" />
+        <GeometryDrawing Brush="{StaticResource AppIconTileBrush}">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="4,4,248,248" RadiusX="52" RadiusY="52" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+
+        <!-- Deck only (no upright) and a larger walker without arms. -->
+        <GeometryDrawing Geometry="M40,212 L216,176">
+          <GeometryDrawing.Pen>
+            <Pen Brush="{StaticResource AppIconInkBrush}" Thickness="30" StartLineCap="Round" EndLineCap="Round" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="{StaticResource AppIconInkBrush}">
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry Center="140,60" RadiusX="28" RadiusY="28" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Geometry="M134,104 L122,140 L96,180 M122,140 L156,170">
+          <GeometryDrawing.Pen>
+            <Pen Brush="{StaticResource AppIconInkBrush}" Thickness="28" StartLineCap="Round" EndLineCap="Round"
+                 LineJoin="Round" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingImage.Drawing>
+  </DrawingImage>
+
+</ResourceDictionary>
