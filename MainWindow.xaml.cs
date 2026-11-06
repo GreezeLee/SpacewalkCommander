@@ -3,13 +3,15 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Media;
+using UrevoSpacewalkCommander.Infrastructure;
 using UrevoSpacewalkCommander.ViewModels;
 
 namespace UrevoSpacewalkCommander;
 
 /// <summary>
-/// The main window. Holds no logic besides view concerns: culture of the bindings, log scrolling and the
-/// confirmation before closing while the belt runs.
+/// The main window. Holds no logic besides view concerns: culture of the bindings, the dark title bar, log
+/// scrolling and the confirmation before closing while the belt runs.
 /// </summary>
 public partial class MainWindow : Window
 {
@@ -32,6 +34,22 @@ public partial class MainWindow : Window
     _viewModel.LogEntries.CollectionChanged += OnLogChanged;
     Closing += OnClosing;
     Loaded += OnLoaded;
+    SourceInitialized += OnSourceInitialized;
+  }
+
+  /// <summary>
+  /// Colours the native title bar like the window background as soon as the window has a handle, so the title bar
+  /// and the content look like one dark surface.
+  /// </summary>
+  /// <param name="sender">The window.</param>
+  /// <param name="e">Unused.</param>
+  private void OnSourceInitialized(object? sender, EventArgs e)
+  {
+    DarkTitleBar.Apply(
+      this,
+      (Color)FindResource("WindowColor"),
+      (Color)FindResource("TextColor"),
+      (Color)FindResource("BorderColor"));
   }
 
   /// <summary>

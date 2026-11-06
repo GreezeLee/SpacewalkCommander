@@ -32,13 +32,14 @@ is “Urevo Spacewalk Commander”.
 
 ```
 UrevoSpacewalkCommander.csproj  WPF application
-App.xaml(.cs)                   Application entry (StartupUri = MainWindow)
-MainWindow.xaml(.cs)            The only window; view concerns only (culture, log scrolling, close confirmation)
+App.xaml(.cs)                   Application entry (StartupUri = MainWindow); merges Themes/Theme.xaml
+MainWindow.xaml(.cs)            The only window; view concerns only (culture, dark title bar, log scrolling, close confirmation)
+Themes/Theme.xaml               Dark theme: palette, typography, control templates (see 9.1)
 Bluetooth/                      BLE scanning, FTMS protocol and GATT client
 Workouts/                       Recording, analysis and local archive of workouts
 GoogleHealth/                   OAuth sign-in, Google Health API client, payload mapping, upload service
 Configuration/                  AppSettings (settings.json, OAuth client file), TreadmillTargetsStore (last-targets.json)
-Infrastructure/                 MVVM helpers: ObservableObject, RelayCommand, Debouncer
+Infrastructure/                 MVVM helpers: ObservableObject, RelayCommand, Debouncer; DarkTitleBar (DWM title bar colours)
 ViewModels/                     MainViewModel (treadmill), WorkoutSyncViewModel (Google Health area)
 UrevoSpacewalkCommander.Tests/  xUnit tests (analysis, payload, FTMS codec, archive, targets store)
 documents/internals.md          This document
@@ -300,6 +301,27 @@ saving never rewrites the user's file):
 - Everything is English: code, comments, this document, the README, UI texts, log lines, the browser page after
   sign-in and the notes uploaded to Google Health.
 
+### 9.1 User interface
+
+- **Dark theme only**, defined in `Themes/Theme.xaml` and merged into the application resources, so its implicit
+  styles (Button, ComboBox, Slider, ScrollBar, ToolTip) apply everywhere. Colours are named `Color` resources
+  (`WindowColor`, `SurfaceColor`, `AccentColor` teal, `InclineColor` violet, `GoColor` / `PauseColor` / `StopColor`)
+  with matching brushes; use them instead of literal colours. Named styles: `Card`, `Tile`, `PrimaryButton`,
+  `IconButton`, `StepButton`, `StartButton` / `PauseButton` / `StopButton`, `LogList`, text styles.
+- Colours of a styled button must come from its style, not from attributes in the window: local values would
+  override the style trigger that turns a disabled action button grey.
+- Icons: font glyphs from *Segoe Fluent Icons* (Windows 11) with *Segoe MDL2 Assets* as fallback; speed and
+  incline symbols are drawn as `Path` geometries in `MainWindow.xaml` (no suitable glyph exists in both fonts).
+- Layout (top to bottom): header with the status text (`MainViewModel.StatusText`) and a state badge
+  (Offline / Searching / Connecting / Connected / Running, derived from the view model flags; searching and running
+  pulse); treadmill card (device list, Scan, Connect, Disconnect); targets card (speed and incline with −/+,
+  slider, range, Start / Pause / STOP); live values (six tiles); Google Health card; log (takes the remaining height).
+- **Title bar:** `DarkTitleBar.Apply` (called from `MainWindow.OnSourceInitialized`) sets the DWM attributes
+  immersive dark mode (20) and, on Windows 11, caption (35), text (36) and border (34) colours from the theme, so
+  title bar and content look like one surface. Errors are ignored (older Windows keeps its default title bar).
+- Labels referenced by the README (“Scan”, “Connect”, “Disconnect”, “Start”, “Pause”, “STOP”, “Sign in with
+  Google”, “Upload pending”, “Open settings”, “Google Health”, log) must stay as they are or be changed together.
+
 ## 10. Known limitations
 
 - FTMS support of the Spacewalk 3S is assumed, not verified on hardware.
@@ -322,3 +344,4 @@ saving never rewrites the user's file):
 | 2026-11-06 | Translated the whole app to English (UI, status and log texts, dialogs, sign-in page, Google Health notes). |
 | 2026-11-06 | Added `.gitignore` (build output, IDE files, test results, OAuth client secrets). |
 | 2026-11-06 | Target speed and incline are saved to `last-targets.json` and restored at the next start. |
+| 2026-11-06 | Modern dark UI: `Themes/Theme.xaml`, card layout with state badge, dark title bar (`DarkTitleBar`). |
