@@ -1,0 +1,48 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+publish/
+*.nupkg
+*.snupkg
+
+# Visual Studio / VS Code / Rider
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Test results and coverage
+[Tt]est[Rr]esult*/
+*.trx
+coverage*.json
+coverage*.xml
+*.coverage
+*.coveragexml
+
+# NuGet
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Secrets: Google OAuth client files and tokens belong in %APPDATA%, never in the repository
+client_secret*.json
+*.token.json
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
