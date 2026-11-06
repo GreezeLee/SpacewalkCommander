@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text.Json;
 
-namespace UrevoSpacewalkCommander.Configuration;
+namespace SpacewalkCommander.Configuration;
 
 /// <summary>
 /// Remembers the target speed and incline last selected by the user in <c>last-targets.json</c>, so that the next

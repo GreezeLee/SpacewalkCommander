@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.GoogleHealth;
+namespace SpacewalkCommander.GoogleHealth;
 
 /// <summary>
 /// A Google Health API data point carrying an exercise session

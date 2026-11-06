@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace UrevoSpacewalkCommander.GoogleHealth;
+namespace SpacewalkCommander.GoogleHealth;
 
 /// <summary>
 /// Calls the Google Health API v4.

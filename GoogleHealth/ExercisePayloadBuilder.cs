@@ -1,7 +1,7 @@
 using System.Globalization;
-using UrevoSpacewalkCommander.Workouts;
+using SpacewalkCommander.Workouts;
 
-namespace UrevoSpacewalkCommander.GoogleHealth;
+namespace SpacewalkCommander.GoogleHealth;
 
 /// <summary>
 /// Maps a recorded workout to the Google Health API exercise data point.

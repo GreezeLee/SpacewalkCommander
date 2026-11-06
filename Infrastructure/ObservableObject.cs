@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
-namespace UrevoSpacewalkCommander.Infrastructure;
+namespace SpacewalkCommander.Infrastructure;
 
 /// <summary>
 /// Base class for view models: implements property change notification.

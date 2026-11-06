@@ -1,4 +1,4 @@
-# UrevoSpacewalkCommander – Internals
+# SpacewalkCommander – Internals
 
 This document describes how the application works internally. It is the reference for anyone (human or AI)
 changing the code. **Keep it in sync with the code** – every change to behaviour, protocols, file formats,
@@ -6,32 +6,33 @@ settings or structure must be reflected here in the same change, and noted in th
 
 ## 1. Purpose
 
-**UrevoSpacewalkCommander** is a Windows WPF desktop application that controls a **Urevo Spacewalk 3S**
+**SpacewalkCommander** is a Windows WPF desktop application that controls a **Urevo Spacewalk 3S**
 treadmill over Bluetooth LE (start, pause, stop, target speed, target incline), shows its live values, records
 every workout and uploads it to **Google Health** (the successor of Google Fit).
 
-The name `UrevoSpacewalkCommander` is used for the project file, assembly, root namespace, test project and the
-AppData folders (`%APPDATA%\UrevoSpacewalkCommander`, `%LOCALAPPDATA%\UrevoSpacewalkCommander`). The window title
-is “Urevo Spacewalk Commander”.
+The name `SpacewalkCommander` is used for the project file, assembly, root namespace, test project and the
+AppData folders (`%APPDATA%\SpacewalkCommander`, `%LOCALAPPDATA%\SpacewalkCommander`). The window title
+is “Spacewalk Commander”. “Urevo” appears only where the treadmill hardware is meant (device name fragments,
+`device.manufacturer` in the Google Health payload, the vendor's phone app), never as part of the application name.
 
 ## 2. Build, run, test
 
 | Task | Command (from the repository root) |
 |---|---|
-| Build | `dotnet build UrevoSpacewalkCommander.csproj` |
-| Run | `dotnet run --project UrevoSpacewalkCommander.csproj` |
-| Test | `dotnet test UrevoSpacewalkCommander.Tests` |
+| Build | `dotnet build SpacewalkCommander.csproj` |
+| Run | `dotnet run --project SpacewalkCommander.csproj` |
+| Test | `dotnet test SpacewalkCommander.Tests` |
 
 - Target framework: `net10.0-windows10.0.19041.0` (needs the Windows SDK projection for the WinRT Bluetooth APIs).
 - No NuGet packages in the application; the test project uses xUnit.
-- The test project lives in `UrevoSpacewalkCommander.Tests/` *below* the application folder. The application
+- The test project lives in `SpacewalkCommander.Tests/` *below* the application folder. The application
   project excludes it via `DefaultItemExcludes`; do not remove that line, or the tests get compiled into the app.
 - Internal types are visible to the tests through `InternalsVisibleTo`.
 
 ## 3. Project layout
 
 ```
-UrevoSpacewalkCommander.csproj  WPF application
+SpacewalkCommander.csproj       WPF application
 App.xaml(.cs)                   Application entry (StartupUri = MainWindow); merges Themes/Theme.xaml
 MainWindow.xaml(.cs)            The only window; view concerns only (culture, dark title bar, log scrolling, close confirmation)
 Themes/Theme.xaml               Dark theme: palette, typography, control templates (see 9.1)
@@ -41,7 +42,7 @@ GoogleHealth/                   OAuth sign-in, Google Health API client, payload
 Configuration/                  AppSettings (settings.json, OAuth client file), TreadmillTargetsStore (last-targets.json)
 Infrastructure/                 MVVM helpers: ObservableObject, RelayCommand, Debouncer; DarkTitleBar (DWM title bar colours)
 ViewModels/                     MainViewModel (treadmill), WorkoutSyncViewModel (Google Health area)
-UrevoSpacewalkCommander.Tests/  xUnit tests (analysis, payload, FTMS codec, archive, targets store)
+SpacewalkCommander.Tests/       xUnit tests (analysis, payload, FTMS codec, archive, targets store)
 documents/internals.md          This document
 README.md                       User guide: features, setup, Google Health sign-in, troubleshooting
 CLAUDE.md                       Instructions for AI assistants (read and maintain this document)
@@ -185,7 +186,7 @@ Workouts with **less than 60 s active time or less than 20 m** are discarded as 
 
 ### 6.3 Local archive (`WorkoutStore`)
 
-- Folder: `%LOCALAPPDATA%\UrevoSpacewalkCommander\workouts\` with `pending\` and `uploaded\`.
+- Folder: `%LOCALAPPDATA%\SpacewalkCommander\workouts\` with `pending\` and `uploaded\`.
 - File name: `yyyyMMdd-HHmmss-<first 8 hex of id>.json`; content: the complete `WorkoutSession`
   (camelCase JSON, enums as names, all samples). Upload payloads are always recomputed from this file.
 - A finished workout is written to `pending\` **synchronously before** any upload starts, so it survives
@@ -228,7 +229,7 @@ step/distance totals.
 - Scope: `https://www.googleapis.com/auth/googlehealth.activity_and_fitness.writeonly` only.
 - Endpoints: `https://accounts.google.com/o/oauth2/v2/auth`, `https://oauth2.googleapis.com/token`.
 - The refresh token is stored DPAPI-encrypted (current Windows user) in
-  `%LOCALAPPDATA%\UrevoSpacewalkCommander\google-refresh-token.bin` (`TokenStore`). Access tokens live in memory only and are
+  `%LOCALAPPDATA%\SpacewalkCommander\google-refresh-token.bin` (`TokenStore`). Access tokens live in memory only and are
   renewed 1 minute before expiry. `invalid_grant` deletes the stored token → “sign-in required”.
 - After sign-in, `GET /v4/users/me/identity` verifies the account; `ACCOUNT_NOT_LINKED` means the user has to sign
   in to the Google Health app on the phone once.
@@ -255,14 +256,14 @@ step/distance totals.
 2. OAuth consent screen: user type *External*, publishing status *Testing*, add the own Google account as test
    user, add the scope `googlehealth.activity_and_fitness.writeonly` under Data Access.
 3. Credentials: create an OAuth client of type **Desktop app**; download the JSON.
-4. Put the downloaded `client_secret_*.json` into `%APPDATA%\UrevoSpacewalkCommander\` (button “Open settings”), or
+4. Put the downloaded `client_secret_*.json` into `%APPDATA%\SpacewalkCommander\` (button “Open settings”), or
    enter `googleClientId` / `googleClientSecret` in `settings.json`.
 5. Sign in once to the Google Health / Fitbit app on the phone with the same account.
 6. In the app: “Sign in with Google”.
 
 ## 8. Settings (`AppSettings`)
 
-`%APPDATA%\UrevoSpacewalkCommander\settings.json` (created as a template on first start):
+`%APPDATA%\SpacewalkCommander\settings.json` (created as a template on first start):
 
 | Key | Type | Meaning |
 |---|---|---|
@@ -275,7 +276,7 @@ If `googleClientId`/`googleClientSecret` are empty, the first `client_secret*.js
 
 ### 8.1 Remembered targets (`TreadmillTargetsStore`)
 
-`%APPDATA%\UrevoSpacewalkCommander\last-targets.json`, written by the app only (kept apart from `settings.json` so
+`%APPDATA%\SpacewalkCommander\last-targets.json`, written by the app only (kept apart from `settings.json` so
 saving never rewrites the user's file):
 
 ```json
@@ -345,3 +346,4 @@ saving never rewrites the user's file):
 | 2026-11-06 | Added `.gitignore` (build output, IDE files, test results, OAuth client secrets). |
 | 2026-11-06 | Target speed and incline are saved to `last-targets.json` and restored at the next start. |
 | 2026-11-06 | Modern dark UI: `Themes/Theme.xaml`, card layout with state badge, dark title bar (`DarkTitleBar`). |
+| 2026-11-06 | Renamed the app from `UrevoSpacewalkCommander` to `SpacewalkCommander` (project files, assembly, namespaces, tests, AppData folders, window title, sign-in page, README). |

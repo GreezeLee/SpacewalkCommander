@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 
-namespace UrevoSpacewalkCommander.Infrastructure;
+namespace SpacewalkCommander.Infrastructure;
 
 /// <summary>
 /// Gives the native title bar and frame of a window the colours of the dark application theme, so the window

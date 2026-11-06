@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Bluetooth;
+namespace SpacewalkCommander.Bluetooth;
 
 /// <summary>
 /// A Bluetooth LE device found while scanning.

@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Bluetooth;
+namespace SpacewalkCommander.Bluetooth;
 
 /// <summary>
 /// A closed numeric range with a step size, as reported by the treadmill (speed in km/h, incline in percent).

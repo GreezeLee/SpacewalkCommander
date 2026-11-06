@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UrevoSpacewalkCommander.csproj" />
+    <ProjectReference Include="..\SpacewalkCommander.csproj" />
   </ItemGroup>
 
   <ItemGroup>

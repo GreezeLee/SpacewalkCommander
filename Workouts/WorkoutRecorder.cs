@@ -1,6 +1,6 @@
-using UrevoSpacewalkCommander.Bluetooth;
+using SpacewalkCommander.Bluetooth;
 
-namespace UrevoSpacewalkCommander.Workouts;
+namespace SpacewalkCommander.Workouts;
 
 /// <summary>
 /// Records the workout that is in progress. All methods are idempotent with respect to the belt state, because

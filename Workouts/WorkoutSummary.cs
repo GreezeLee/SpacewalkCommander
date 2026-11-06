@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Workouts;
+namespace SpacewalkCommander.Workouts;
 
 /// <summary>
 /// Key figures of a finished workout, derived from its raw recording by <see cref="WorkoutAnalyzer"/>.

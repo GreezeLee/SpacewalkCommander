@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Bluetooth;
+namespace SpacewalkCommander.Bluetooth;
 
 /// <summary>
 /// One decoded FTMS "Treadmill Data" notification. A value is <see langword="null"/> when the treadmill

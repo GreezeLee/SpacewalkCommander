@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Workouts;
+namespace SpacewalkCommander.Workouts;
 
 /// <summary>
 /// One telemetry notification of the treadmill, stamped with the time it was received. Fields are

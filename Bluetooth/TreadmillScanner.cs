@@ -2,7 +2,7 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Devices.Radios;
 
-namespace UrevoSpacewalkCommander.Bluetooth;
+namespace SpacewalkCommander.Bluetooth;
 
 /// <summary>
 /// Scans for nearby Bluetooth LE devices. Events are raised on background threads.

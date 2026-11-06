@@ -1,6 +1,6 @@
-using UrevoSpacewalkCommander.Bluetooth;
+using SpacewalkCommander.Bluetooth;
 
-namespace UrevoSpacewalkCommander.Tests;
+namespace SpacewalkCommander.Tests;
 
 /// <summary>
 /// Tests the FTMS encoders and decoders against hand-built byte sequences from the FTMS specification.

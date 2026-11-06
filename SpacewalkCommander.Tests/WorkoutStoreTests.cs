@@ -1,7 +1,7 @@
 using System.IO;
-using UrevoSpacewalkCommander.Workouts;
+using SpacewalkCommander.Workouts;
 
-namespace UrevoSpacewalkCommander.Tests;
+namespace SpacewalkCommander.Tests;
 
 /// <summary>
 /// Tests the local workout archive.
@@ -9,7 +9,7 @@ namespace UrevoSpacewalkCommander.Tests;
 public sealed class WorkoutStoreTests : IDisposable
 {
   /// <summary>Temporary archive folder of one test.</summary>
-  private readonly string _directory = Path.Combine(Path.GetTempPath(), "UrevoSpacewalkCommanderTests", Guid.NewGuid().ToString("N"));
+  private readonly string _directory = Path.Combine(Path.GetTempPath(), "SpacewalkCommanderTests", Guid.NewGuid().ToString("N"));
 
   /// <summary>A saved workout reads back unchanged and moves to "uploaded" after the upload.</summary>
   [Fact]

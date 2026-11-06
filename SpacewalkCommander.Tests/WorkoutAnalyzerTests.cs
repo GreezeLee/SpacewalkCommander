@@ -1,6 +1,6 @@
-using UrevoSpacewalkCommander.Workouts;
+using SpacewalkCommander.Workouts;
 
-namespace UrevoSpacewalkCommander.Tests;
+namespace SpacewalkCommander.Tests;
 
 /// <summary>
 /// Tests the derivation of workout key figures from raw recordings.

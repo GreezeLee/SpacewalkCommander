@@ -1,7 +1,7 @@
 using System.IO;
-using UrevoSpacewalkCommander.Configuration;
+using SpacewalkCommander.Configuration;
 
-namespace UrevoSpacewalkCommander.Tests;
+namespace SpacewalkCommander.Tests;
 
 /// <summary>
 /// Tests the store that remembers the last speed and incline.
@@ -9,7 +9,7 @@ namespace UrevoSpacewalkCommander.Tests;
 public sealed class TreadmillTargetsStoreTests : IDisposable
 {
   /// <summary>Temporary settings folder of one test; not created up front, as on a first start.</summary>
-  private readonly string _directory = Path.Combine(Path.GetTempPath(), "UrevoSpacewalkCommanderTests", Guid.NewGuid().ToString("N"));
+  private readonly string _directory = Path.Combine(Path.GetTempPath(), "SpacewalkCommanderTests", Guid.NewGuid().ToString("N"));
 
   /// <summary>Saved targets read back unchanged, also when the folder did not exist yet.</summary>
   [Fact]

@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Infrastructure;
+namespace SpacewalkCommander.Infrastructure;
 
 /// <summary>
 /// Runs an action only after calls to <see cref="Schedule"/> stopped for a while. Used so that dragging a slider

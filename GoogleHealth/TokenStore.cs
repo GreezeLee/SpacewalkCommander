@@ -2,7 +2,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace UrevoSpacewalkCommander.GoogleHealth;
+namespace SpacewalkCommander.GoogleHealth;
 
 /// <summary>
 /// Keeps the Google refresh token on disk, encrypted with Windows DPAPI for the current Windows user, so that

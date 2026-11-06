@@ -8,9 +8,9 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Web;
-using UrevoSpacewalkCommander.Configuration;
+using SpacewalkCommander.Configuration;
 
-namespace UrevoSpacewalkCommander.GoogleHealth;
+namespace SpacewalkCommander.GoogleHealth;
 
 /// <summary>
 /// Obtains access tokens for the Google Health API with the OAuth 2.0 flow for installed applications: the
@@ -38,7 +38,7 @@ internal sealed class GoogleAuthorization
   /// <summary>Page shown in the browser after the redirect.</summary>
   private const string BrowserResponsePage =
     "<html><head><meta charset=\"utf-8\"></head><body style=\"font-family:sans-serif\">"
-    + "<h2>Urevo Spacewalk Commander</h2><p>{0}</p><p>You can close this window.</p></body></html>";
+    + "<h2>Spacewalk Commander</h2><p>{0}</p><p>You can close this window.</p></body></html>";
 
   /// <summary>How long the user has to complete the sign-in in the browser.</summary>
   private static readonly TimeSpan s_browserTimeout = TimeSpan.FromMinutes(5);

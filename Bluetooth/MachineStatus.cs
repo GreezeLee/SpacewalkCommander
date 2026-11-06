@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Bluetooth;
+namespace SpacewalkCommander.Bluetooth;
 
 /// <summary>
 /// Kind of event reported by the FTMS "Fitness Machine Status" characteristic.

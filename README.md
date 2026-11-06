@@ -1,4 +1,4 @@
-# Urevo Spacewalk Commander
+# Spacewalk Commander
 
 A Windows desktop app to control a **Urevo Spacewalk 3S** treadmill from your PC via Bluetooth and to log every
 walk to **Google Health** (the Fitbit / Google Health app – the successor of Google Fit).
@@ -33,7 +33,7 @@ uploaded later (at the next start, after signing in, or with “Upload pending�
 ## Build and run
 
 ```powershell
-dotnet run --project UrevoSpacewalkCommander.csproj
+dotnet run --project SpacewalkCommander.csproj
 ```
 
 Before starting, **close the Urevo app on your phone** (or switch off the phone's Bluetooth): the treadmill
@@ -71,7 +71,7 @@ Keep this file private – do not share it or put it into source control.
 
 ### 4. Give the client to the app
 
-1. In the app, click **“Open settings”**. Explorer opens `%APPDATA%\UrevoSpacewalkCommander\`.
+1. In the app, click **“Open settings”**. Explorer opens `%APPDATA%\SpacewalkCommander\`.
 2. Copy the downloaded `client_secret_….json` into this folder.
    (Alternatively, enter `googleClientId` and `googleClientSecret` in `settings.json` in the same folder.)
 3. **Restart the app** – the settings are read at start-up.
@@ -99,7 +99,7 @@ While your Cloud project is in **Testing** status, Google ends the sign-in after
 
 ## Settings
 
-`%APPDATA%\UrevoSpacewalkCommander\settings.json` (created on first start):
+`%APPDATA%\SpacewalkCommander\settings.json` (created on first start):
 
 | Setting | Meaning |
 |---|---|
@@ -112,10 +112,10 @@ Restart the app after changing settings.
 
 | What | Location |
 |---|---|
-| Walks not yet uploaded | `%LOCALAPPDATA%\UrevoSpacewalkCommander\workouts\pending\` |
-| Uploaded walks (archive) | `%LOCALAPPDATA%\UrevoSpacewalkCommander\workouts\uploaded\` |
-| Google sign-in (encrypted for your Windows user) | `%LOCALAPPDATA%\UrevoSpacewalkCommander\google-refresh-token.bin` |
-| Last selected speed and incline | `%APPDATA%\UrevoSpacewalkCommander\last-targets.json` |
+| Walks not yet uploaded | `%LOCALAPPDATA%\SpacewalkCommander\workouts\pending\` |
+| Uploaded walks (archive) | `%LOCALAPPDATA%\SpacewalkCommander\workouts\uploaded\` |
+| Google sign-in (encrypted for your Windows user) | `%LOCALAPPDATA%\SpacewalkCommander\google-refresh-token.bin` |
+| Last selected speed and incline | `%APPDATA%\SpacewalkCommander\last-targets.json` |
 
 To sign out, close the app and delete `google-refresh-token.bin`.
 
@@ -139,4 +139,4 @@ To sign out, close the app and delete `google-refresh-token.bin`.
 ## For developers
 
 How the app works internally is described in [documents/internals.md](documents/internals.md).
-Tests: `dotnet test UrevoSpacewalkCommander.Tests`.
+Tests: `dotnet test SpacewalkCommander.Tests`.

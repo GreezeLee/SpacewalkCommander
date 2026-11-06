@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Workouts;
+namespace SpacewalkCommander.Workouts;
 
 /// <summary>
 /// State change of the belt during a workout.

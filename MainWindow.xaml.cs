@@ -4,10 +4,10 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
-using UrevoSpacewalkCommander.Infrastructure;
-using UrevoSpacewalkCommander.ViewModels;
+using SpacewalkCommander.Infrastructure;
+using SpacewalkCommander.ViewModels;
 
-namespace UrevoSpacewalkCommander;
+namespace SpacewalkCommander;
 
 /// <summary>
 /// The main window. Holds no logic besides view concerns: culture of the bindings, the dark title bar, log

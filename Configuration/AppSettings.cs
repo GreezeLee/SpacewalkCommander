@@ -2,17 +2,17 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace UrevoSpacewalkCommander.Configuration;
+namespace SpacewalkCommander.Configuration;
 
 /// <summary>
-/// User settings from <c>%APPDATA%\UrevoSpacewalkCommander\settings.json</c>. The Google OAuth client is personal and never
+/// User settings from <c>%APPDATA%\SpacewalkCommander\settings.json</c>. The Google OAuth client is personal and never
 /// part of the source code: it is either entered in <c>settings.json</c> or provided as the
 /// <c>client_secret_*.json</c> file downloaded from the Google Cloud console into the same folder.
 /// </summary>
 internal sealed class AppSettings
 {
   /// <summary>Name of the application's folders below AppData.</summary>
-  private const string ApplicationFolderName = "UrevoSpacewalkCommander";
+  private const string ApplicationFolderName = "SpacewalkCommander";
 
   /// <summary>Name of the settings file.</summary>
   private const string SettingsFileName = "settings.json";

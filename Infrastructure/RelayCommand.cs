@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace UrevoSpacewalkCommander.Infrastructure;
+namespace SpacewalkCommander.Infrastructure;
 
 /// <summary>
 /// A command that runs a delegate. The delegate must not throw; the view model methods behind the commands

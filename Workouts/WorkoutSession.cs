@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Workouts;
+namespace SpacewalkCommander.Workouts;
 
 /// <summary>
 /// A finished workout with its complete raw recording. This is what is archived locally and what the upload to

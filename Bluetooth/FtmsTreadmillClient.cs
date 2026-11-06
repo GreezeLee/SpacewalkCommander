@@ -4,7 +4,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 
-namespace UrevoSpacewalkCommander.Bluetooth;
+namespace SpacewalkCommander.Bluetooth;
 
 /// <summary>
 /// Controls one treadmill through the Bluetooth LE Fitness Machine Service (FTMS).

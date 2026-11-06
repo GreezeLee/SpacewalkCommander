@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace UrevoSpacewalkCommander;
+namespace SpacewalkCommander;
 
 /// <summary>
 /// Application entry point. All start-up work is done declaratively in <c>App.xaml</c>.

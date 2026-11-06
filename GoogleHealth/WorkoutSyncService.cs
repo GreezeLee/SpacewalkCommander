@@ -1,7 +1,7 @@
 using System.IO;
-using UrevoSpacewalkCommander.Workouts;
+using SpacewalkCommander.Workouts;
 
-namespace UrevoSpacewalkCommander.GoogleHealth;
+namespace SpacewalkCommander.GoogleHealth;
 
 /// <summary>
 /// Uploads archived workouts to Google Health. Every workout is archived first, so a workout survives a missing

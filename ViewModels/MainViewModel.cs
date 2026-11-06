@@ -4,12 +4,12 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using UrevoSpacewalkCommander.Bluetooth;
-using UrevoSpacewalkCommander.Configuration;
-using UrevoSpacewalkCommander.Infrastructure;
-using UrevoSpacewalkCommander.Workouts;
+using SpacewalkCommander.Bluetooth;
+using SpacewalkCommander.Configuration;
+using SpacewalkCommander.Infrastructure;
+using SpacewalkCommander.Workouts;
 
-namespace UrevoSpacewalkCommander.ViewModels;
+namespace SpacewalkCommander.ViewModels;
 
 /// <summary>
 /// State and commands of the main window: finding and connecting the treadmill, starting and stopping the belt,

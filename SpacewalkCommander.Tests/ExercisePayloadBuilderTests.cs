@@ -1,8 +1,8 @@
 using System.Text.Json;
-using UrevoSpacewalkCommander.GoogleHealth;
-using UrevoSpacewalkCommander.Workouts;
+using SpacewalkCommander.GoogleHealth;
+using SpacewalkCommander.Workouts;
 
-namespace UrevoSpacewalkCommander.Tests;
+namespace SpacewalkCommander.Tests;
 
 /// <summary>
 /// Tests the mapping of a workout to the Google Health API exercise JSON.

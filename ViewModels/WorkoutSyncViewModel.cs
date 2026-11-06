@@ -2,12 +2,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Windows.Input;
-using UrevoSpacewalkCommander.Configuration;
-using UrevoSpacewalkCommander.GoogleHealth;
-using UrevoSpacewalkCommander.Infrastructure;
-using UrevoSpacewalkCommander.Workouts;
+using SpacewalkCommander.Configuration;
+using SpacewalkCommander.GoogleHealth;
+using SpacewalkCommander.Infrastructure;
+using SpacewalkCommander.Workouts;
 
-namespace UrevoSpacewalkCommander.ViewModels;
+namespace SpacewalkCommander.ViewModels;
 
 /// <summary>
 /// State and commands of the "Google Health" area: sign-in, upload of pending workouts, and the status line.

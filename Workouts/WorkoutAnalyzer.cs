@@ -1,4 +1,4 @@
-namespace UrevoSpacewalkCommander.Workouts;
+namespace SpacewalkCommander.Workouts;
 
 /// <summary>
 /// Derives the key figures of a workout (distance, energy, speeds, incline, virtual climb, splits) from its raw

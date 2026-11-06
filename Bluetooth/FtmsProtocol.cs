@@ -1,6 +1,6 @@
 using System.Buffers.Binary;
 
-namespace UrevoSpacewalkCommander.Bluetooth;
+namespace SpacewalkCommander.Bluetooth;
 
 /// <summary>
 /// Constants and encoders/decoders for the Bluetooth SIG Fitness Machine Service (FTMS, 0x1826), the standard
