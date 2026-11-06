@@ -10,6 +10,7 @@ walk to **Google Health** (the Fitbit / Google Health app – the successor of G
   (“Scan” → select → “Connect”).
 - **Controls the belt:** “Start”, “Pause”, “STOP”, target speed and incline (slider or −/+ buttons).
   The selected speed is applied on start; while the belt runs, changes are sent as soon as the slider rests.
+  The last selected speed and incline are remembered and preselected at the next start of the app.
 - **Shows live values** from the treadmill: speed, incline, distance, time, energy, heart rate (as far as the
   treadmill reports them).
 - **Records every walk** and, when it ends (stop, safety key, disconnect or closing the app), saves it on your PC
@@ -114,6 +115,7 @@ Restart the app after changing settings.
 | Walks not yet uploaded | `%LOCALAPPDATA%\UrevoSpacewalkCommander\workouts\pending\` |
 | Uploaded walks (archive) | `%LOCALAPPDATA%\UrevoSpacewalkCommander\workouts\uploaded\` |
 | Google sign-in (encrypted for your Windows user) | `%LOCALAPPDATA%\UrevoSpacewalkCommander\google-refresh-token.bin` |
+| Last selected speed and incline | `%APPDATA%\UrevoSpacewalkCommander\last-targets.json` |
 
 To sign out, close the app and delete `google-refresh-token.bin`.
 

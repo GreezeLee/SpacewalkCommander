@@ -37,10 +37,10 @@ MainWindow.xaml(.cs)            The only window; view concerns only (culture, lo
 Bluetooth/                      BLE scanning, FTMS protocol and GATT client
 Workouts/                       Recording, analysis and local archive of workouts
 GoogleHealth/                   OAuth sign-in, Google Health API client, payload mapping, upload service
-Configuration/AppSettings.cs    User settings (settings.json, OAuth client file)
+Configuration/                  AppSettings (settings.json, OAuth client file), TreadmillTargetsStore (last-targets.json)
 Infrastructure/                 MVVM helpers: ObservableObject, RelayCommand, Debouncer
 ViewModels/                     MainViewModel (treadmill), WorkoutSyncViewModel (Google Health area)
-UrevoSpacewalkCommander.Tests/  xUnit tests (analysis, payload, FTMS codec, archive)
+UrevoSpacewalkCommander.Tests/  xUnit tests (analysis, payload, FTMS codec, archive, targets store)
 documents/internals.md          This document
 README.md                       User guide: features, setup, Google Health sign-in, troubleshooting
 CLAUDE.md                       Instructions for AI assistants (read and maintain this document)
@@ -146,6 +146,12 @@ consumers must therefore treat every field as optional.
   (400 ms, `Debouncer`) so dragging sends one command. Speed is only sent while the belt runs (otherwise applied
   at the next start); incline is sent whenever connected.
 - **Ranges:** from the treadmill; defaults if not reported: speed 1.0–6.0 km/h (step 0.1), incline 0–15 % (step 1).
+- **Remembered targets:** the selected speed and incline are saved to `last-targets.json` (see 8.1) 1 s after the
+  last change (own `Debouncer`) and again when the app closes, and preselected at the next start (initial values
+  without a file: 2.0 km/h, 0 %). Until the first connection, the restored values are kept as saved
+  (`_restoredTargets`) and only limited to the treadmill's ranges in `ApplyRanges`, so the default ranges cannot cut
+  them off; saves before the first connection write them unchanged. Restoring does not send anything to the
+  treadmill: the incline is sent at the next change or start, the speed at the start.
 - **Safety:** Stop is always enabled while connected. *Disconnect* stops a running belt first. Closing the window
   while the belt runs asks for confirmation and stops it.
 - **Status notifications** (console buttons, safety key) update the running state the same way as own commands.
@@ -266,6 +272,23 @@ step/distance totals.
 If `googleClientId`/`googleClientSecret` are empty, the first `client_secret*.json` in the same folder is used
 (`installed` or `web` section). Secrets never belong in the repository.
 
+### 8.1 Remembered targets (`TreadmillTargetsStore`)
+
+`%APPDATA%\UrevoSpacewalkCommander\last-targets.json`, written by the app only (kept apart from `settings.json` so
+saving never rewrites the user's file):
+
+```json
+{
+  "speedKmh": 3.5,
+  "inclinePercent": 4
+}
+```
+
+- Both keys are required. Written to `last-targets.json.tmp` and then moved over the file, so an interrupted save
+  keeps the previous values.
+- A missing file means “nothing to restore”. An unreadable or invalid file is logged and ignored; the next save
+  overwrites it. Save failures are only logged.
+
 ## 9. Conventions
 
 - Ammann C#/.NET coding guidelines apply (2-space indentation, Allman braces, `_camelCase` fields, file-scoped
@@ -298,3 +321,4 @@ If `googleClientId`/`googleClientSecret` are empty, the first `client_secret*.js
 | 2026-11-06 | Added `README.md` (user guide incl. Google Health sign-in). |
 | 2026-11-06 | Translated the whole app to English (UI, status and log texts, dialogs, sign-in page, Google Health notes). |
 | 2026-11-06 | Added `.gitignore` (build output, IDE files, test results, OAuth client secrets). |
+| 2026-11-06 | Target speed and incline are saved to `last-targets.json` and restored at the next start. |

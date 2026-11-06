@@ -1,9 +1,11 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using UrevoSpacewalkCommander.Bluetooth;
+using UrevoSpacewalkCommander.Configuration;
 using UrevoSpacewalkCommander.Infrastructure;
 using UrevoSpacewalkCommander.Workouts;
 
@@ -60,6 +62,9 @@ internal sealed class MainViewModel : ObservableObject
   /// <summary>Time to wait before the second attempt to set the speed after a start (start countdown).</summary>
   private static readonly TimeSpan s_startRetryDelay = TimeSpan.FromSeconds(3);
 
+  /// <summary>Pause after the last change of a target before the targets are saved for the next start.</summary>
+  private static readonly TimeSpan s_targetsSaveDebounce = TimeSpan.FromSeconds(1);
+
   /// <summary>Dispatcher of the UI thread; Bluetooth events arrive on other threads.</summary>
   private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -71,6 +76,18 @@ internal sealed class MainViewModel : ObservableObject
 
   /// <summary>Delays sending the incline while the slider is still moving.</summary>
   private readonly Debouncer _inclineDebouncer = new(s_settingDebounce);
+
+  /// <summary>Delays saving the targets while the slider is still moving.</summary>
+  private readonly Debouncer _targetsSaveDebouncer = new(s_targetsSaveDebounce);
+
+  /// <summary>Remembers the selected speed and incline across application starts.</summary>
+  private readonly TreadmillTargetsStore _targetsStore = new(AppSettings.SettingsDirectory);
+
+  /// <summary>
+  /// Targets restored from the last session, kept as saved until the first connection: before it, only the default
+  /// ranges are known, which could cut off a value the treadmill supports. <see langword="null"/> once applied.
+  /// </summary>
+  private TreadmillTargets? _restoredTargets;
 
   /// <summary>Cancelled when the application shuts down; ends all pending Bluetooth operations.</summary>
   private readonly CancellationTokenSource _lifetime = new();
@@ -142,6 +159,7 @@ internal sealed class MainViewModel : ObservableObject
     SpeedDownCommand = new RelayCommand(() => TargetSpeed -= SpeedStep, () => IsConnected);
     InclineUpCommand = new RelayCommand(() => TargetIncline += InclineStep, () => IsConnected);
     InclineDownCommand = new RelayCommand(() => TargetIncline -= InclineStep, () => IsConnected);
+    RestoreTargets();
   }
 
   /// <summary>Gets the treadmills found by the last scan.</summary>
@@ -248,7 +266,8 @@ internal sealed class MainViewModel : ObservableObject
 
   /// <summary>
   /// Gets or sets the wanted speed in km/h. While the belt runs, a change is sent to the treadmill after the
-  /// slider rests; while it is stopped, the value is applied at the next start.
+  /// slider rests; while it is stopped, the value is applied at the next start. Every change is saved for the next
+  /// application start.
   /// </summary>
   public double TargetSpeed
   {
@@ -256,7 +275,13 @@ internal sealed class MainViewModel : ObservableObject
     set
     {
       double snapped = Snap(value, MinSpeed, MaxSpeed, SpeedStep);
-      if (SetProperty(ref _targetSpeed, snapped) && IsRunning)
+      if (!SetProperty(ref _targetSpeed, snapped))
+      {
+        return;
+      }
+
+      _targetsSaveDebouncer.Schedule(SaveTargetsAsync);
+      if (IsRunning)
       {
         _speedDebouncer.Schedule(SendSpeedAsync);
       }
@@ -286,7 +311,7 @@ internal sealed class MainViewModel : ObservableObject
 
   /// <summary>
   /// Gets or sets the wanted incline in percent. While connected, a change is sent to the treadmill after the
-  /// slider rests.
+  /// slider rests. Every change is saved for the next application start.
   /// </summary>
   public double TargetIncline
   {
@@ -294,7 +319,13 @@ internal sealed class MainViewModel : ObservableObject
     set
     {
       double snapped = Snap(value, MinIncline, MaxIncline, InclineStep);
-      if (SetProperty(ref _targetIncline, snapped) && IsConnected)
+      if (!SetProperty(ref _targetIncline, snapped))
+      {
+        return;
+      }
+
+      _targetsSaveDebouncer.Schedule(SaveTargetsAsync);
+      if (IsConnected)
       {
         _inclineDebouncer.Schedule(SendInclineAsync);
       }
@@ -344,9 +375,9 @@ internal sealed class MainViewModel : ObservableObject
   }
 
   /// <summary>
-  /// Ends the session when the window closes: optionally stops the belt, finishes the workout in progress, waits
-  /// a bounded time for its upload, then releases Bluetooth. A workout whose upload does not finish in time stays
-  /// archived and is uploaded at the next start.
+  /// Ends the session when the window closes: saves the targets, optionally stops the belt, finishes the workout in
+  /// progress, waits a bounded time for its upload, then releases Bluetooth. A workout whose upload does not finish
+  /// in time stays archived and is uploaded at the next start.
   /// </summary>
   /// <param name="stopBelt"><see langword="true"/> to stop a running belt before disconnecting.</param>
   public async Task ShutdownAsync(bool stopBelt)
@@ -354,6 +385,8 @@ internal sealed class MainViewModel : ObservableObject
     StopScan();
     _speedDebouncer.Cancel();
     _inclineDebouncer.Cancel();
+    _targetsSaveDebouncer.Cancel();
+    SaveTargets();
     if (stopBelt && _client is not null)
     {
       await RunGuardedAsync("Stop",() => _client.StopAsync(_lifetime.Token));
@@ -854,7 +887,8 @@ internal sealed class MainViewModel : ObservableObject
   }
 
   /// <summary>
-  /// Adopts the ranges the treadmill reports and re-limits the selected values to them.
+  /// Adopts the ranges the treadmill reports and re-limits the selected values to them. At the first connection
+  /// the targets restored from the last session are used as saved, not as already limited to the default ranges.
   /// </summary>
   /// <param name="client">The connected client.</param>
   private void ApplyRanges(FtmsTreadmillClient client)
@@ -867,8 +901,66 @@ internal sealed class MainViewModel : ObservableObject
     MaxIncline = incline.Max;
     MinIncline = incline.Min;
     InclineStep = incline.Step > 0 ? incline.Step : DefaultInclineStepPercent;
-    TargetSpeed = TargetSpeed;
-    TargetIncline = TargetIncline;
+    TreadmillTargets? restored = _restoredTargets;
+    _restoredTargets = null;
+    TargetSpeed = restored?.SpeedKmh ?? TargetSpeed;
+    TargetIncline = restored?.InclinePercent ?? TargetIncline;
+  }
+
+  /// <summary>
+  /// Preselects the speed and incline of the last session. A missing file keeps the initial values; an unreadable
+  /// one is logged and ignored, it is overwritten at the next save.
+  /// </summary>
+  private void RestoreTargets()
+  {
+    TreadmillTargets? targets;
+    try
+    {
+      targets = _targetsStore.Load();
+    }
+    catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
+    {
+      AddLog($"Last speed and incline not restored: {exception.Message}");
+      return;
+    }
+
+    if (targets is null)
+    {
+      return;
+    }
+
+    // Set the fields directly: the setters would schedule a save of the values limited to the default ranges.
+    _targetSpeed = Snap(targets.SpeedKmh, MinSpeed, MaxSpeed, SpeedStep);
+    _targetIncline = Snap(targets.InclinePercent, MinIncline, MaxIncline, InclineStep);
+    _restoredTargets = targets;
+  }
+
+  /// <summary>
+  /// Saves the targets after the slider rested.
+  /// </summary>
+  /// <returns>A completed task; the save itself is synchronous.</returns>
+  private Task SaveTargetsAsync()
+  {
+    SaveTargets();
+    return Task.CompletedTask;
+  }
+
+  /// <summary>
+  /// Saves the selected speed and incline for the next application start. Before the first connection the restored
+  /// targets are saved unchanged, because the displayed ones may be limited to the default ranges. A failure is only
+  /// logged: losing the targets is not worth interrupting the user.
+  /// </summary>
+  private void SaveTargets()
+  {
+    TreadmillTargets targets = _restoredTargets ?? new TreadmillTargets(TargetSpeed, TargetIncline);
+    try
+    {
+      _targetsStore.Save(targets);
+    }
+    catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+    {
+      AddLog($"Speed and incline not saved: {exception.Message}");
+    }
   }
 
   /// <summary>
