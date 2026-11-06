@@ -23,6 +23,9 @@ is “Spacewalk Commander”. “Urevo” appears only where the treadmill hardw
 | Run | `dotnet run --project SpacewalkCommander.csproj` |
 | Test | `dotnet test SpacewalkCommander.Tests` |
 
+In VS Code, `.vscode/tasks.json` provides the tasks **build** (default build task, Ctrl+Shift+B; `dotnet build`
+with the `$msCompile` problem matcher) and **start** (`dotnet run`, builds and starts the app).
+
 - Target framework: `net10.0-windows10.0.19041.0` (needs the Windows SDK projection for the WinRT Bluetooth APIs).
 - No NuGet packages in the application; the test project uses xUnit.
 - The test project lives in `SpacewalkCommander.Tests/` *below* the application folder. The application
@@ -46,6 +49,7 @@ SpacewalkCommander.Tests/       xUnit tests (analysis, payload, FTMS codec, arch
 documents/internals.md          This document
 README.md                       User guide: features, setup, Google Health sign-in, troubleshooting
 CLAUDE.md                       Instructions for AI assistants (read and maintain this document)
+.vscode/tasks.json              VS Code tasks: build, start (see 2)
 .gitignore                      Ignores build output (bin/, obj/), IDE files, test results and OAuth secrets (client_secret*.json)
 ```
 
@@ -347,3 +351,4 @@ saving never rewrites the user's file):
 | 2026-11-06 | Target speed and incline are saved to `last-targets.json` and restored at the next start. |
 | 2026-11-06 | Modern dark UI: `Themes/Theme.xaml`, card layout with state badge, dark title bar (`DarkTitleBar`). |
 | 2026-11-06 | Renamed the app from `UrevoSpacewalkCommander` to `SpacewalkCommander` (project files, assembly, namespaces, tests, AppData folders, window title, sign-in page, README). |
+| 2026-11-06 | Added VS Code tasks `build` and `start` (`.vscode/tasks.json`). |
